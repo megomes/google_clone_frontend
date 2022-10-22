@@ -1,4 +1,5 @@
 import { useCommandsStore } from 'src/stores/commands-store';
+import { ref } from 'vue';
 import TerminalCommandController from './TerminalCommandController';
 
 export default class TerminalUIController {
@@ -11,9 +12,15 @@ export default class TerminalUIController {
 
   terminalCommandController = new TerminalCommandController();
 
+  loadingTotal = ref(0);
+  loadingActual = ref(0);
+  private loadingState = ref(0);
+  private loadingBars = ['-', '\\', '|', '/'];
+
   constructor() {
     this.commandStore.actualPosition =
       this.commandStore.linesArray[this.commandStore.actualLine].length;
+    this.updateLoading();
   }
 
   processContent() {
@@ -84,23 +91,99 @@ export default class TerminalUIController {
 
       if (
         this.commandStore.actualPosition == -1 &&
+        this.loadingTotal.value > 0 &&
+        i == this.commandStore.actualLine
+      ) {
+        returnText = returnText + '[';
+        for (let i = 0; i < 10; i++) {
+          if (
+            i <
+            (10 * this.loadingActual.value + 1) / this.loadingTotal.value
+          ) {
+            returnText =
+              returnText + this.cursorBefore + '&nbsp' + this.cursorAfter;
+          } else {
+            returnText = returnText + '&nbsp';
+          }
+        }
+        returnText = returnText + ']';
+        // divide por 10
+      }
+
+      if (
+        this.commandStore.actualPosition == -1 &&
+        this.loadingTotal.value != 0 &&
         i == this.commandStore.actualLine
       ) {
         returnText =
-          returnText + this.cursorBefore + '&nbsp;' + this.cursorAfter;
+          returnText + ' ' + this.loadingBars[this.loadingState.value % 4] + '';
       }
+
+      // if (
+      //   this.commandStore.actualPosition == -1 &&
+      //   i == this.commandStore.actualLine
+      // ) {
+      //   returnText =
+      //     returnText + this.cursorBefore + '&nbsp;' + this.cursorAfter;
+      // }
     }
 
     return returnText;
   }
 
+  private updateLoading() {
+    this.loadingState.value = this.loadingState.value + 1;
+    if (this.loadingState.value > 1000) {
+      this.loadingState.value = 0;
+    }
+    setTimeout(() => {
+      this.updateLoading();
+    }, 300);
+  }
+
+  // Loading
+
+  startLoading(total = -1) {
+    this.loadingTotal.value = total;
+    this.loadingActual.value = 0;
+  }
+
+  setLoading(actual: number, inverse = false) {
+    this.loadingActual.value = inverse
+      ? this.loadingTotal.value - actual
+      : actual;
+  }
+
+  stopLoading() {
+    this.loadingTotal.value = 0;
+    this.loadingActual.value = 0;
+  }
+
   print(text: string) {
     this.commandStore.answerArray[this.commandStore.actualLine] +=
-      text.replaceAll(' ', '&nbsp;');
+      text.replaceAll('  ', '&nbsp;&nbsp;');
   }
 
   println(text: string) {
     this.print(text + '<br>');
+  }
+
+  eraseln() {
+    const actualAnswer =
+      this.commandStore.answerArray[this.commandStore.actualLine];
+    const lines = actualAnswer.split('<br>').filter((val) => {
+      if (val == '') {
+        return false;
+      }
+      return true;
+    });
+    lines.pop();
+
+    let linesReturn = '';
+    for (let i = 0; i < lines.length; i++) {
+      linesReturn = linesReturn + lines[i] + '<br>';
+    }
+    this.commandStore.answerArray[this.commandStore.actualLine] = linesReturn;
   }
 
   keyDown(e: KeyboardEvent) {
@@ -159,6 +242,7 @@ export default class TerminalUIController {
           this.commandStore.lineReference = -1;
           this.commandStore.actualPosition =
             this.commandStore.linesArray[this.commandStore.actualLine].length;
+          this.stopLoading();
         }
       );
       // this.commandStore.answerArray[this.commandStore.actualLine] =
