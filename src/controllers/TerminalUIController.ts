@@ -3,9 +3,16 @@ import { ref } from 'vue';
 import TerminalCommandController from './TerminalCommandController';
 
 export default class TerminalUIController {
+  blink = ref(true);
+  private cursorColorGreen = 'bg-green-500 text-black';
+  private cursorColorWhite = 'text-green-500 bg-black';
   private lineText =
     '<div class="line_start" contenteditable="false">~ $&nbsp;</div>';
-  private cursorBefore = '<span class="bg-green-500 text-black font-semibold">';
+  private cursorBefore = ref(
+    `<span class="${
+      this.blink.value ? this.cursorColorGreen : this.cursorColorWhite
+    } font-semibold">`
+  );
   private cursorAfter = '</span>';
 
   commandStore = useCommandsStore();
@@ -21,6 +28,7 @@ export default class TerminalUIController {
     this.commandStore.actualPosition =
       this.commandStore.linesArray[this.commandStore.actualLine].length;
     this.updateLoading();
+    // this.blinkCursor();
   }
 
   processContent() {
@@ -46,7 +54,9 @@ export default class TerminalUIController {
 
         returnText =
           returnText +
-          this.cursorBefore +
+          `<span class="${
+            this.blink.value ? this.cursorColorGreen : this.cursorColorWhite
+          } font-semibold">` +
           this.processString(
             this.commandStore.linesArray[i].substring(
               this.commandStore.actualPosition,
@@ -69,7 +79,12 @@ export default class TerminalUIController {
           this.commandStore.linesArray[i].length
         ) {
           returnText =
-            returnText + this.cursorBefore + '&nbsp;' + this.cursorAfter;
+            returnText +
+            `<span class="${
+              this.blink.value ? this.cursorColorGreen : this.cursorColorWhite
+            } font-semibold">` +
+            '&nbsp;' +
+            this.cursorAfter;
         }
       } else {
         returnText =
@@ -101,7 +116,12 @@ export default class TerminalUIController {
             (10 * this.loadingActual.value + 1) / this.loadingTotal.value
           ) {
             returnText =
-              returnText + this.cursorBefore + '&nbsp' + this.cursorAfter;
+              returnText +
+              `<span class="${
+                this.blink.value ? this.cursorColorGreen : this.cursorColorWhite
+              } font-semibold">` +
+              '&nbsp' +
+              this.cursorAfter;
           } else {
             returnText = returnText + '&nbsp';
           }
@@ -124,7 +144,7 @@ export default class TerminalUIController {
       //   i == this.commandStore.actualLine
       // ) {
       //   returnText =
-      //     returnText + this.cursorBefore + '&nbsp;' + this.cursorAfter;
+      //     returnText + this. + '&nbsp;' + this.cursorAfter;
       // }
     }
 
@@ -139,6 +159,17 @@ export default class TerminalUIController {
     setTimeout(() => {
       this.updateLoading();
     }, 300);
+  }
+
+  private blinkCursor() {
+    // console.log('a');
+    this.blink.value = !this.blink.value;
+    setTimeout(
+      () => {
+        this.blinkCursor();
+      },
+      this.blink.value ? 700 : 300
+    );
   }
 
   // Loading
