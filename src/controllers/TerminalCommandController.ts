@@ -16,18 +16,5 @@ export default class TerminalCommandController {
 
     const command = TerminalCommandsTranslator.getCommand(args);
     return command.execute();
-
-    // console.log(values);
-    // if (values.length == 0) {
-    //   return '';
-    // }
-    // return `
-    // <span class="error">
-    //   ${}: The term '${}' is not recognized as a name of a cmdlet, function, script file, or executable program.
-    //   <br>
-    //   Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
-    // </span>
-    // <br>
-    // `;
   }
 }

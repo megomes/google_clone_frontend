@@ -1,3 +1,4 @@
+import { useCommandsStore } from 'src/stores/commands-store';
 import { ref } from 'vue';
 import TerminalCommandController from './TerminalCommandController';
 
@@ -7,41 +8,46 @@ export default class TerminalUIController {
   private cursorBefore = '<span class="bg-green-500 text-black font-semibold">';
   private cursorAfter = '</span>';
 
-  linesArray = ref(['']);
-  answerArray = ref(['']);
-  actualLine = ref(0);
-  lineReference = ref(-1);
-  actualPosition = ref(0);
+  commandStore = useCommandsStore();
+
+  // linesArray = this.commandStore.linesArray; // ref(['']);
+  // answerArray = this.commandStore.answerArray; //ref(['']);
+  // actualLine = this.commandStore.actualLine; //ref(0);
+  // lineReference = this.commandStore.lineReference; //ref(-1);
+  // actualPosition = this.commandStore.actualPosition; //ref(0);
 
   terminalCommandController = new TerminalCommandController();
 
   constructor() {
-    this.actualPosition.value =
-      this.linesArray.value[this.actualLine.value].length;
+    this.commandStore.actualPosition =
+      this.commandStore.linesArray[this.commandStore.actualLine].length;
   }
 
   processContent() {
     let returnText = '';
-    for (let i = 0; i < this.linesArray.value.length; i++) {
+    for (let i = 0; i < this.commandStore.linesArray.length; i++) {
       if (i != 0) {
         returnText = returnText + '<br>';
       }
       returnText = returnText + this.lineText;
 
-      if (this.actualLine.value == i) {
+      if (this.commandStore.actualLine == i) {
         returnText =
           returnText +
           this.processString(
-            this.linesArray.value[i].substring(0, this.actualPosition.value)
+            this.commandStore.linesArray[i].substring(
+              0,
+              this.commandStore.actualPosition
+            )
           );
 
         returnText =
           returnText +
           this.cursorBefore +
           this.processString(
-            this.linesArray.value[i].substring(
-              this.actualPosition.value,
-              this.actualPosition.value + 1
+            this.commandStore.linesArray[i].substring(
+              this.commandStore.actualPosition,
+              this.commandStore.actualPosition + 1
             )
           ) +
           this.cursorAfter;
@@ -49,25 +55,29 @@ export default class TerminalUIController {
         returnText =
           returnText +
           this.processString(
-            this.linesArray.value[i].substring(
-              this.actualPosition.value + 1,
-              this.linesArray.value[i].length
+            this.commandStore.linesArray[i].substring(
+              this.commandStore.actualPosition + 1,
+              this.commandStore.linesArray[i].length
             )
           );
 
-        if (this.actualPosition.value == this.linesArray.value[i].length) {
+        if (
+          this.commandStore.actualPosition ==
+          this.commandStore.linesArray[i].length
+        ) {
           returnText =
             returnText + this.cursorBefore + '&nbsp;' + this.cursorAfter;
         }
       } else {
-        returnText = returnText + this.processString(this.linesArray.value[i]);
+        returnText =
+          returnText + this.processString(this.commandStore.linesArray[i]);
       }
 
-      if (this.actualLine.value > i) {
-        if (this.answerArray.value[i] == '') {
-          returnText = returnText + this.answerArray.value[i];
+      if (this.commandStore.actualLine > i) {
+        if (this.commandStore.answerArray[i] == '') {
+          returnText = returnText + this.commandStore.answerArray[i];
         } else {
-          returnText = returnText + '<br>' + this.answerArray.value[i];
+          returnText = returnText + '<br>' + this.commandStore.answerArray[i];
         }
       }
     }
@@ -76,85 +86,92 @@ export default class TerminalUIController {
   }
 
   keyDown(e: KeyboardEvent) {
-    // console.log(this.actualLine.value);
+    // console.log(this.commandStore.actualLine);
     // console.log(e);
     // console.log(e.shiftKey);
     if (e.key == ' ' || e.key == 'ArrowUp' || e.key == 'ArrowDown') {
       e.preventDefault();
     }
     if (e.key == 'Backspace') {
-      if (this.actualPosition.value > 0) {
-        this.linesArray.value[this.actualLine.value] =
-          this.linesArray.value[this.actualLine.value].slice(
+      if (this.commandStore.actualPosition > 0) {
+        this.commandStore.linesArray[this.commandStore.actualLine] =
+          this.commandStore.linesArray[this.commandStore.actualLine].slice(
             0,
-            this.actualPosition.value - 1
+            this.commandStore.actualPosition - 1
           ) +
-          this.linesArray.value[this.actualLine.value].slice(
-            this.actualPosition.value
+          this.commandStore.linesArray[this.commandStore.actualLine].slice(
+            this.commandStore.actualPosition
           );
-        this.actualPosition.value -= 1;
+        this.commandStore.actualPosition -= 1;
       }
     } else if (e.key == 'ArrowLeft') {
-      if (this.actualPosition.value > 0) {
-        this.actualPosition.value -= 1;
+      if (this.commandStore.actualPosition > 0) {
+        this.commandStore.actualPosition -= 1;
       }
     } else if (e.key == 'ArrowRight') {
       if (
-        this.actualPosition.value <
-        this.linesArray.value[this.actualLine.value].length
+        this.commandStore.actualPosition <
+        this.commandStore.linesArray[this.commandStore.actualLine].length
       ) {
-        this.actualPosition.value += 1;
+        this.commandStore.actualPosition += 1;
       }
     } else if (e.key == 'Enter') {
-      this.linesArray.value[this.actualLine.value] = this.linesArray.value[
-        this.actualLine.value
-      ]
-        .replaceAll('¬', ' ')
-        .trim()
-        .replaceAll(' ', '¬');
+      this.commandStore.linesArray[this.commandStore.actualLine] =
+        this.commandStore.linesArray[this.commandStore.actualLine]
+          .replaceAll('¬', ' ')
+          .trim()
+          .replaceAll(' ', '¬');
       // Process
 
-      this.answerArray.value[this.actualLine.value] =
+      this.commandStore.answerArray[this.commandStore.actualLine] =
         this.terminalCommandController.processCommand(
-          this.linesArray.value[this.actualLine.value]
+          this.commandStore.linesArray[this.commandStore.actualLine]
         );
-      this.linesArray.value.push('');
 
-      this.answerArray.value.push('');
-      this.actualLine.value += 1;
-      this.lineReference.value = -1;
-      this.actualPosition.value =
-        this.linesArray.value[this.actualLine.value].length;
+      console.log(this.commandStore.linesArray);
+      this.commandStore.linesArray.push('');
+      console.log(this.commandStore.linesArray);
+      this.commandStore.answerArray.push('');
+      this.commandStore.actualLine += 1;
+      this.commandStore.lineReference = -1;
+      this.commandStore.actualPosition =
+        this.commandStore.linesArray[this.commandStore.actualLine].length;
       // scrollToBottom();
     } else if (e.key == 'ArrowUp') {
       // Arrow Up
-      if (this.actualLine.value > 0 && this.lineReference.value == -1) {
-        this.lineReference.value = this.actualLine.value - 1;
-        this.linesArray.value[this.actualLine.value] =
-          this.linesArray.value[this.lineReference.value];
-        this.actualPosition.value =
-          this.linesArray.value[this.actualLine.value].length;
-      } else if (this.lineReference.value > 0) {
-        this.lineReference.value -= 1;
-        this.linesArray.value[this.actualLine.value] =
-          this.linesArray.value[this.lineReference.value];
-        this.actualPosition.value =
-          this.linesArray.value[this.actualLine.value].length;
+      if (
+        this.commandStore.actualLine > 0 &&
+        this.commandStore.lineReference == -1
+      ) {
+        this.commandStore.lineReference = this.commandStore.actualLine - 1;
+        this.commandStore.linesArray[this.commandStore.actualLine] =
+          this.commandStore.linesArray[this.commandStore.lineReference];
+        this.commandStore.actualPosition =
+          this.commandStore.linesArray[this.commandStore.actualLine].length;
+      } else if (this.commandStore.lineReference > 0) {
+        this.commandStore.lineReference -= 1;
+        this.commandStore.linesArray[this.commandStore.actualLine] =
+          this.commandStore.linesArray[this.commandStore.lineReference];
+        this.commandStore.actualPosition =
+          this.commandStore.linesArray[this.commandStore.actualLine].length;
       }
     } else if (e.key == 'ArrowDown') {
       // Arrow Down
-      if (this.lineReference.value != -1) {
-        this.lineReference.value += 1;
-        if (this.lineReference.value >= this.linesArray.value.length - 1) {
-          this.lineReference.value = -1;
-          this.linesArray.value[this.actualLine.value] = '';
-          this.actualPosition.value =
-            this.linesArray.value[this.actualLine.value].length;
+      if (this.commandStore.lineReference != -1) {
+        this.commandStore.lineReference += 1;
+        if (
+          this.commandStore.lineReference >=
+          this.commandStore.linesArray.length - 1
+        ) {
+          this.commandStore.lineReference = -1;
+          this.commandStore.linesArray[this.commandStore.actualLine] = '';
+          this.commandStore.actualPosition =
+            this.commandStore.linesArray[this.commandStore.actualLine].length;
         } else {
-          this.linesArray.value[this.actualLine.value] =
-            this.linesArray.value[this.lineReference.value];
-          this.actualPosition.value =
-            this.linesArray.value[this.actualLine.value].length;
+          this.commandStore.linesArray[this.commandStore.actualLine] =
+            this.commandStore.linesArray[this.commandStore.lineReference];
+          this.commandStore.actualPosition =
+            this.commandStore.linesArray[this.commandStore.actualLine].length;
         }
       }
     } else {
@@ -164,17 +181,17 @@ export default class TerminalUIController {
           key = '¬';
         }
 
-        this.linesArray.value[this.actualLine.value] =
-          this.linesArray.value[this.actualLine.value].slice(
+        this.commandStore.linesArray[this.commandStore.actualLine] =
+          this.commandStore.linesArray[this.commandStore.actualLine].slice(
             0,
-            this.actualPosition.value
+            this.commandStore.actualPosition
           ) +
           key +
-          this.linesArray.value[this.actualLine.value].slice(
-            this.actualPosition.value
+          this.commandStore.linesArray[this.commandStore.actualLine].slice(
+            this.commandStore.actualPosition
           );
-        // text.value += e.key;
-        this.actualPosition.value += 1;
+        // text += e.key;
+        this.commandStore.actualPosition += 1;
       }
     }
   }

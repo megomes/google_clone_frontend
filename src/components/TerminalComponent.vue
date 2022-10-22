@@ -27,18 +27,20 @@
 <script setup lang="ts">
 import { nextTick, computed, onMounted, onUnmounted, watch } from 'vue';
 import TerminalUIController from '../controllers/TerminalUIController';
+import { useCommandsStore } from 'src/stores/commands-store';
 
 const terminalUIController = new TerminalUIController();
+const commandStore = useCommandsStore();
 
-const linesArray = terminalUIController.linesArray;
-const actualLine = terminalUIController.actualLine;
+const linesArray = commandStore.linesArray; //terminalUIController.linesArray;
+const actualLine = commandStore.actualLine;
 
 const getText = computed({
   get() {
     return terminalUIController.processContent();
   },
   set(val) {
-    linesArray.value[actualLine.value] = val;
+    linesArray[actualLine] = val;
   },
 });
 
