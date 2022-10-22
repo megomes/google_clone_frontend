@@ -6,6 +6,12 @@ import { TerminalCommand } from './TerminalCommandAbstract';
 import { UnkownCommand } from './UnknownCommand';
 
 export default class CommandsFactory {
+  static obj: { [k: string]: any } = {
+    echo: EchoCommand,
+    clear: ClearCommand,
+    secho: SlowEchoCommand,
+  };
+
   static getCommand(
     terminal: TerminalUIController,
     args: string[],
@@ -15,15 +21,12 @@ export default class CommandsFactory {
       return new UnkownCommand(terminal, args, finishExecution);
     }
 
-    switch (args[0]) {
-      case 'echo':
-        return new EchoCommand(terminal, args, finishExecution);
-      case 'clear':
-        return new ClearCommand(terminal, args, finishExecution);
-      case 'secho':
-        return new SlowEchoCommand(terminal, args, finishExecution);
-      default:
-        return new UnkownCommand(terminal, args, finishExecution);
+    console.log(typeof CommandsFactory.obj[args[0]]);
+
+    try {
+      return new CommandsFactory.obj[args[0]](terminal, args, finishExecution);
+    } catch {
+      return new UnkownCommand(terminal, args, finishExecution);
     }
   }
 }
