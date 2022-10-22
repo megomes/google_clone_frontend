@@ -1,5 +1,4 @@
 import { useCommandsStore } from 'src/stores/commands-store';
-import { ref } from 'vue';
 import TerminalCommandController from './TerminalCommandController';
 
 export default class TerminalUIController {
@@ -9,12 +8,6 @@ export default class TerminalUIController {
   private cursorAfter = '</span>';
 
   commandStore = useCommandsStore();
-
-  // linesArray = this.commandStore.linesArray; // ref(['']);
-  // answerArray = this.commandStore.answerArray; //ref(['']);
-  // actualLine = this.commandStore.actualLine; //ref(0);
-  // lineReference = this.commandStore.lineReference; //ref(-1);
-  // actualPosition = this.commandStore.actualPosition; //ref(0);
 
   terminalCommandController = new TerminalCommandController();
 
@@ -31,7 +24,10 @@ export default class TerminalUIController {
       }
       returnText = returnText + this.lineText;
 
-      if (this.commandStore.actualLine == i) {
+      if (
+        this.commandStore.actualLine == i ||
+        this.commandStore.actualPosition == -1
+      ) {
         returnText =
           returnText +
           this.processString(
@@ -73,16 +69,38 @@ export default class TerminalUIController {
           returnText + this.processString(this.commandStore.linesArray[i]);
       }
 
-      if (this.commandStore.actualLine > i) {
-        if (this.commandStore.answerArray[i] == '') {
-          returnText = returnText + this.commandStore.answerArray[i];
-        } else {
-          returnText = returnText + '<br>' + this.commandStore.answerArray[i];
-        }
+      // if (this.commandStore.actualLine > i) {
+      //   if (this.commandStore.answerArray[i] == '') {
+      //     returnText = returnText + this.commandStore.answerArray[i];
+      //   } else {
+      //     returnText = returnText + '<br>' + this.commandStore.answerArray[i];
+      //   }
+      // }
+      if (this.commandStore.answerArray[i] == '') {
+        returnText = returnText + this.commandStore.answerArray[i];
+      } else {
+        returnText = returnText + '<br>' + this.commandStore.answerArray[i];
+      }
+
+      if (
+        this.commandStore.actualPosition == -1 &&
+        i == this.commandStore.actualLine
+      ) {
+        returnText =
+          returnText + this.cursorBefore + '&nbsp;' + this.cursorAfter;
       }
     }
 
     return returnText;
+  }
+
+  print(text: string) {
+    this.commandStore.answerArray[this.commandStore.actualLine] +=
+      text.replaceAll(' ', '&nbsp;');
+  }
+
+  println(text: string) {
+    this.print(text + '<br>');
   }
 
   keyDown(e: KeyboardEvent) {
@@ -91,6 +109,14 @@ export default class TerminalUIController {
     // console.log(e.shiftKey);
     if (e.key == ' ' || e.key == 'ArrowUp' || e.key == 'ArrowDown') {
       e.preventDefault();
+    }
+    if (this.commandStore.actualPosition == -1) {
+      if (e.ctrlKey == true && e.key == 'c') {
+        // Break process
+        this.println('&#94;C');
+        this.terminalCommandController.break();
+      }
+      return;
     }
     if (e.key == 'Backspace') {
       if (this.commandStore.actualPosition > 0) {
@@ -122,20 +148,25 @@ export default class TerminalUIController {
           .trim()
           .replaceAll(' ', '¬');
       // Process
+      this.commandStore.actualPosition = -1;
+      this.terminalCommandController.processCommand(
+        this,
+        this.commandStore.linesArray[this.commandStore.actualLine],
+        () => {
+          this.commandStore.linesArray.push('');
+          this.commandStore.answerArray.push('');
+          this.commandStore.actualLine += 1;
+          this.commandStore.lineReference = -1;
+          this.commandStore.actualPosition =
+            this.commandStore.linesArray[this.commandStore.actualLine].length;
+        }
+      );
+      // this.commandStore.answerArray[this.commandStore.actualLine] =
+      //   this.terminalCommandController.processCommand(
+      //     this,
+      //     this.commandStore.linesArray[this.commandStore.actualLine]
+      //   );
 
-      this.commandStore.answerArray[this.commandStore.actualLine] =
-        this.terminalCommandController.processCommand(
-          this.commandStore.linesArray[this.commandStore.actualLine]
-        );
-
-      console.log(this.commandStore.linesArray);
-      this.commandStore.linesArray.push('');
-      console.log(this.commandStore.linesArray);
-      this.commandStore.answerArray.push('');
-      this.commandStore.actualLine += 1;
-      this.commandStore.lineReference = -1;
-      this.commandStore.actualPosition =
-        this.commandStore.linesArray[this.commandStore.actualLine].length;
       // scrollToBottom();
     } else if (e.key == 'ArrowUp') {
       // Arrow Up

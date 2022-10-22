@@ -1,12 +1,13 @@
 import { TerminalCommand } from './TerminalCommandAbstract';
 
 export class EchoCommand extends TerminalCommand {
-  help(): string {
-    return `
-    echo &lt;output&gt<br>
-    `;
+  help() {
+    this.terminal.println(`
+    echo &lt;output&gt
+    `);
+    this.finishExecution();
   }
-  execute(): string {
+  execute() {
     if (this.args.length == 1) {
       return this.showMissingArguments();
     }
@@ -14,10 +15,14 @@ export class EchoCommand extends TerminalCommand {
       return this.help();
     }
 
-    let echoValues = '';
     for (let i = 1; i < this.args.length; i++) {
-      echoValues += this.args[i] + '<br>';
+      this.terminal.println(this.args[i]);
     }
-    return echoValues;
+
+    this.finishExecution();
+  }
+
+  break() {
+    this.finishExecution();
   }
 }

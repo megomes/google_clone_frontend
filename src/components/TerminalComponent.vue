@@ -71,7 +71,7 @@ function scrollToBottom() {
 }
 
 function redButtonClicked() {
-  //
+  // terminalUIController.log('text');
 }
 function yellowButtonClicked() {
   //
