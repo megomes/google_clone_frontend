@@ -6,6 +6,7 @@
       <TerminalComponent
         class="w-full max-w-[600px] overflow-hidden"
       ></TerminalComponent>
+      <em class="opacity-30 mt-1"><b>Tip:</b> type "help" and press enter</em>
     </div>
   </q-page>
 </template>
