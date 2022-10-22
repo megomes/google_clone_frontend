@@ -88,6 +88,12 @@ function greenButtonClicked() {
 .line_start {
   @apply text-[#27C93F] inline-block select-none;
 }
+.code {
+  @apply text-white bg-[#302C43] px-1 rounded-md;
+}
+.title {
+  @apply text-green-300;
+}
 
 #terminal_container {
   @apply font-code font-thin p-3 px-5 gap-1 flex-1 outline-none select-none overflow-auto;

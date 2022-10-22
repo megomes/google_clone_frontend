@@ -1,10 +1,12 @@
-import { TerminalCommand } from './TerminalCommandAbstract';
+import { TerminalCommand } from '../TerminalCommandAbstract';
 
 export class EchoCommand extends TerminalCommand {
   help() {
-    this.terminal.println(`
-    echo &lt;output&gt
-    `);
+    this.terminal.println('<span class="title">ECHO</span>');
+    this.terminal.println('    <em>Echo a message</em>');
+    this.terminal.println(
+      '    Usage: <span class="code">echo &lt;output&gt</span>'
+    );
     this.finishExecution();
   }
   execute() {

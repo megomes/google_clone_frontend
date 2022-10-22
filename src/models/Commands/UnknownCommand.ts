@@ -1,4 +1,4 @@
-import { TerminalCommand } from './TerminalCommandAbstract';
+import { TerminalCommand } from '../TerminalCommandAbstract';
 
 export class UnkownCommand extends TerminalCommand {
   help() {

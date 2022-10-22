@@ -1,5 +1,5 @@
-import CommandsFactory from 'src/models/Commands/CommandsFactory';
-import { TerminalCommand } from 'src/models/Commands/TerminalCommandAbstract';
+import CommandsFactory from 'src/models/CommandsFactory';
+import { TerminalCommand } from 'src/models/TerminalCommandAbstract';
 import TerminalUIController from './TerminalUIController';
 
 export default class TerminalCommandController {
