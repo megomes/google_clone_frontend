@@ -24,7 +24,9 @@
     <div
       class="flex items-center justify-self-end text-neutral-600 hover:text-white hover:cursor-pointer"
     >
-      <div>How it Works?</div>
+      <a href="https://github.com/megomes/google_clone_frontend"
+        >How it Works?</a
+      >
     </div>
   </header>
 </template>
