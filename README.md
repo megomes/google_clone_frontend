@@ -10,11 +10,15 @@
 
 A Google clone that searches for Wikipedia Articles based on a Terminal simulation
 
-![image](./src/assets/printscreen.jpg)
+[![image](./src/assets/printscreen.jpg)](https://google-clone-frontend.vercel.app/#/)
 
 # Frontend
 
 ## How to Run
+
+Access the website deployed: [Link to Website](https://google-clone-frontend.vercel.app/#/)
+
+Or deploy locally:
 
 ### Install the dependencies
 
