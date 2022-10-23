@@ -16,7 +16,7 @@ export class UnkownCommand extends TerminalCommand {
       `${this.args[0]}: The term '${this.args[0]}' is not recognized as a name of a cmdlet, function, script file, or executable program.`
     );
     this.terminal.println(
-      'Check the spelling of the name, or if a path was included, verify that the path is correct and try again.'
+      'Contribute developing this command on Github: (<a href="https://github.com/megomes/google_clone_frontend">Github Link</a>)'
     );
     this.terminal.print('</span>');
     this.finishExecution();

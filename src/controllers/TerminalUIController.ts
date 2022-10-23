@@ -199,6 +199,14 @@ export default class TerminalUIController {
     this.print(text + '<br>');
   }
 
+  printError(message: string) {
+    this.println('<span class="error">' + message + '</span>');
+  }
+
+  printWarning(message: string) {
+    this.println('<span class="warning">' + message + '</span>');
+  }
+
   eraseln() {
     const actualAnswer =
       this.commandStore.answerArray[this.commandStore.actualLine];

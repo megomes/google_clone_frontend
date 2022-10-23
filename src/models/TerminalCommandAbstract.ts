@@ -31,17 +31,12 @@ export abstract class TerminalCommand {
   }
 
   showMissingArguments(): void {
-    this.terminal.println(
-      '<span class="error">Error: Missing Arguments</span><br>'
-    );
+    this.terminal.printError('Error: Missing Arguments');
+    this.help();
+  }
+
+  showTooManyArguments(): void {
+    this.terminal.printError('Error: Unkown Arguments');
     this.help();
   }
 }
-
-// export interface TerminalCommand {
-//   constructor(): TerminalCommand {
-//     //
-//   }
-//   execute(args: string[]): string;
-//   help(): string;
-// }

@@ -71,7 +71,7 @@ function scrollToBottom() {
 }
 
 function redButtonClicked() {
-  // terminalUIController.log('text');
+  //
 }
 function yellowButtonClicked() {
   //
@@ -85,6 +85,9 @@ function greenButtonClicked() {
 .error {
   @apply text-red-500 font-thin;
 }
+.warning {
+  @apply text-yellow-500;
+}
 .line_start {
   @apply text-[#27C93F] inline-block select-none;
 }
@@ -93,6 +96,16 @@ function greenButtonClicked() {
 }
 .title {
   @apply text-green-300;
+}
+a {
+  @apply opacity-60 underline hover:opacity-100;
+}
+
+.highlight {
+  @apply text-green-300 font-extrabold;
+}
+.page_summary {
+  @apply pl-16 font-extralight opacity-60;
 }
 
 #terminal_container {

@@ -5,9 +5,11 @@ import { SlowEchoCommand } from './Commands/SlowEchoCommand';
 import { TerminalCommand } from './TerminalCommandAbstract';
 import { UnkownCommand } from './Commands/UnknownCommand';
 import TerminalUIController from '../controllers/TerminalUIController';
+import { GoogleCommand } from './Commands/GoogleCommand';
 
 export default class CommandsFactory {
   static commands: { [k: string]: any } = {
+    gwk: GoogleCommand,
     help: HelpCommand,
     echo: EchoCommand,
     clear: ClearCommand,
