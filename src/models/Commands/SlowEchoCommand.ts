@@ -1,27 +1,33 @@
 import { TerminalCommand } from '../TerminalCommandAbstract';
 
 export class SlowEchoCommand extends TerminalCommand {
-  shouldBreak = false;
+  config = {
+    title: 'SLOW ECHO',
+    description: 'Echo a message multiple times async',
+    usage: ['secho [OPTIONS] <output>'],
+    options: [
+      {
+        minified: '-t',
+        normal: '--time',
+        description: 'time[ms]',
+        default: '1000ms',
+      },
+      {
+        minified: '-c',
+        normal: '--count',
+        description: 'count',
+        default: '5',
+      },
+      {
+        minified: '-nl',
+        normal: '--noloading',
+        description: 'no loading',
+        default: 'true',
+      },
+    ],
+  };
 
-  help() {
-    this.terminal.println('<span class="title">SLOW ECHO</span>');
-    this.terminal.println('    <em>Echo a message multiple times async</em>');
-    this.terminal.println(
-      '    Usage: <span class="code">$ secho [OPTIONS] &lt;output&gt;</span>'
-    );
-    this.terminal.println('');
-    this.terminal.println('    Options:');
-    this.terminal.println(
-      '       <span class="code">-t</span>,  <span class="code">--time</span>           time[ms]      (default: 1000ms)'
-    );
-    this.terminal.println(
-      '       <span class="code">-c</span>,  <span class="code">--count</span>          count         (default: 5)'
-    );
-    this.terminal.println(
-      '       <span class="code">-nl</span>, <span class="code">--noloading</span>      no loading    (default: true)'
-    );
-    this.finishExecution();
-  }
+  shouldBreak = false;
 
   execute() {
     if (this.checkHelp()) {
@@ -95,12 +101,4 @@ export class SlowEchoCommand extends TerminalCommand {
       this.finishExecution();
     }
   }
-
-  // loading(v: number) {
-  //   const statusBars = ['-', '\\', '|', '/'];
-  //   this.terminal.println('[' + statusBars[v % 4] + ']');
-  //   setTimeout(() => {
-  //     loading(v + 1)
-  //   }, 300);
-  // }
 }

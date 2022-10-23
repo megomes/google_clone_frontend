@@ -1,14 +1,13 @@
 import { TerminalCommand } from '../TerminalCommandAbstract';
 
 export class EchoCommand extends TerminalCommand {
-  help() {
-    this.terminal.println('<span class="title">ECHO</span>');
-    this.terminal.println('    <em>Echo a message</em>');
-    this.terminal.println(
-      '    Usage: <span class="code">echo &lt;output&gt</span>'
-    );
-    this.finishExecution();
-  }
+  config = {
+    title: 'ECHO',
+    description: 'Echo a message',
+    usage: ['echo <output>'],
+    options: [],
+  };
+
   execute() {
     if (this.args.length == 1) {
       return this.showMissingArguments();

@@ -10,10 +10,10 @@ import { GoogleCommand } from './Commands/GoogleCommand';
 export default class CommandsFactory {
   static commands: { [k: string]: any } = {
     gwk: GoogleCommand,
+    secho: SlowEchoCommand,
     help: HelpCommand,
     echo: EchoCommand,
     clear: ClearCommand,
-    secho: SlowEchoCommand,
   };
 
   static getCommand(

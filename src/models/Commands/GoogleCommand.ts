@@ -8,21 +8,20 @@ export class GoogleCommand extends TerminalCommand {
   returnsCount = 0;
   shouldBreak = false;
 
-  help() {
-    this.terminal.println(
-      '<span class="title">&#9733; GOOGLE WIKI (GWK)</span>'
-    );
-    this.terminal.println('    <em>Google a wikipedia page</em>');
-    this.terminal.println(
-      '    Usage: <span class="code">gwk [OPTIONS] &lt;query&gt;</span>'
-    );
-    this.terminal.println('');
-    this.terminal.println('    Options:');
-    this.terminal.println(
-      '       <span class="code">-m</span>,  <span class="code">--min</span>           minified       (default: 1000ms)'
-    );
-    this.finishExecution();
-  }
+  config = {
+    title: '&#9733; GOOGLE WIKI (GWK)',
+    description: 'Google a wikipedia page',
+    usage: ['gwk [OPTIONS] <query>'],
+    options: [
+      {
+        minified: '-m',
+        normal: '--min',
+        description: 'minified',
+        default: '1000ms',
+      },
+    ],
+  };
+
   execute() {
     if (this.args.length == 1) {
       return this.showMissingArguments();
