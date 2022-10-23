@@ -33,7 +33,7 @@ npx quasar dev
 ## Backend
 
 To learn more about the backend, follow the
-[backend repository](https://github.com/megomes/google_clone_backend)
+[backend repository](https://github.com/megomes/google_clone_backend_node)
 
 # Contribute
 

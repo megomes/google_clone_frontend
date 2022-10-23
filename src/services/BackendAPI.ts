@@ -2,7 +2,7 @@ import { WikiDocResponse } from 'src/models/BackendAPI/Wiki/WikiDoc';
 import API from './API';
 
 export default {
-  main_url: 'https://googleclonebackend-production.up.railway.app/',
+  main_url: 'https://google-clone-backend-node.vercel.app/api/',
   getEverything() {
     return API(this.main_url).get('/wiki') as Promise<WikiDocResponse>;
   },
