@@ -1,6 +1,7 @@
-# Google Clone
+# Google Clone Frontend
 
 ![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![Quasar](https://img.shields.io/badge/Quasar-16B7FB?style=for-the-badge&logo=quasar&logoColor=black)
 ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
@@ -34,9 +35,9 @@ npm install
 npx quasar dev
 ```
 
-## Backend
+## "Backend" (Vercel Serverless Functions)
 
-To learn more about the backend, follow the
+To learn more about the "backend", follow the
 [backend repository](https://github.com/megomes/google_clone_backend_node)
 
 # Contribute
