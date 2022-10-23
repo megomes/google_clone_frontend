@@ -81,8 +81,11 @@ export class GoogleCommand extends TerminalCommand {
           for (let i = 0; i < res.data.length; i++) {
             const doc = res.data[i];
             const page_link = doc._source.href;
-
-            WikipediaAPI.getPage(page_link.split('/').pop()!)
+            let pageValue = page_link.split('/').pop();
+            if (pageValue == null) {
+              pageValue = '';
+            }
+            WikipediaAPI.getPage(pageValue)
               .then((res: WikiSummaryResponse) => {
                 if (this.shouldBreak) {
                   return;
