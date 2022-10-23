@@ -8,6 +8,7 @@ import TerminalUIController from '../controllers/TerminalUIController';
 import { GoogleCommand } from './Commands/GoogleCommand';
 
 export default class CommandsFactory {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static commands: { [k: string]: any } = {
     gwk: GoogleCommand,
     secho: SlowEchoCommand,

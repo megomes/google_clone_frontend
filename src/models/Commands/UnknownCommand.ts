@@ -1,9 +1,17 @@
 import { TerminalCommand } from '../TerminalCommandAbstract';
 
 export class UnkownCommand extends TerminalCommand {
+  config = {
+    title: 'UNKNOWN',
+    description: '-',
+    usage: ['-'],
+    options: [],
+  };
+
   help() {
     //
   }
+
   execute() {
     console.log(this.args.length);
     if (this.args.length == 0) {

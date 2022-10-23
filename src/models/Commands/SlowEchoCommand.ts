@@ -1,3 +1,4 @@
+import { ArgsOption, CommandTypes } from '../CommandConfig';
 import { TerminalCommand } from '../TerminalCommandAbstract';
 
 export class SlowEchoCommand extends TerminalCommand {
@@ -7,22 +8,36 @@ export class SlowEchoCommand extends TerminalCommand {
     usage: ['secho [OPTIONS] <output>'],
     options: [
       {
+        minified: '<output>',
+        normal: '',
+        description: 'output to print',
+        default: '',
+        type: CommandTypes.string,
+        required: true,
+      },
+      {
         minified: '-t',
         normal: '--time',
         description: 'time[ms]',
         default: '1000ms',
+        type: CommandTypes.number,
+        required: false,
       },
       {
         minified: '-c',
         normal: '--count',
         description: 'count',
         default: '5',
+        type: CommandTypes.number,
+        required: false,
       },
       {
         minified: '-nl',
-        normal: '--noloading',
+        normal: '',
         description: 'no loading',
         default: 'true',
+        type: CommandTypes.boolean,
+        required: false,
       },
     ],
   };
@@ -30,45 +45,28 @@ export class SlowEchoCommand extends TerminalCommand {
   shouldBreak = false;
 
   execute() {
-    if (this.checkHelp()) {
-      this.help();
-    }
-    if (this.args.length == 1) {
-      this.showMissingArguments();
-      return;
-    }
-
     let time = 1000;
     let count = 5;
     let output = '';
     let loading = true;
 
+    let args: ArgsOption[] = [];
     try {
-      for (let i = 1; i < this.args.length; i++) {
-        if (this.args[i] == '-t' || this.args[i] == '--time') {
-          time = Number(this.args[i + 1]);
-          i++;
-          continue;
-        }
-        if (this.args[i] == '-c' || this.args[i] == '--count') {
-          count = Number(this.args[i + 1]);
-          i++;
-          continue;
-        }
-        if (this.args[i] == '-nl' || this.args[i] == '--noloading') {
-          loading = false;
-          continue;
-        }
-        output = this.args[i];
-      }
-    } catch {
-      this.showMissingArguments();
+      args = this.processOptions();
+    } catch (error) {
       return;
     }
 
-    if (output == '') {
-      this.showMissingArguments();
-      return;
+    for (const arg of args) {
+      if (arg.minified == '-t') {
+        time = arg.value as number;
+      } else if (arg.minified == '-c') {
+        count = arg.value as number;
+      } else if (arg.minified == '-nl') {
+        loading = false;
+      } else if (arg.minified == '') {
+        output = arg.value as string;
+      }
     }
 
     this.a(output, count, time);

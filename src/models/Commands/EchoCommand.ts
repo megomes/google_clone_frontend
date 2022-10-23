@@ -1,3 +1,4 @@
+import { ArgsOption, CommandTypes } from '../CommandConfig';
 import { TerminalCommand } from '../TerminalCommandAbstract';
 
 export class EchoCommand extends TerminalCommand {
@@ -5,20 +6,34 @@ export class EchoCommand extends TerminalCommand {
     title: 'ECHO',
     description: 'Echo a message',
     usage: ['echo <output>'],
-    options: [],
+    options: [
+      {
+        minified: '<output>',
+        normal: '',
+        description: 'output message',
+        default: '',
+        type: CommandTypes.string,
+        required: true,
+      },
+    ],
   };
 
   execute() {
-    if (this.args.length == 1) {
-      return this.showMissingArguments();
-    }
-    if (this.checkHelp()) {
-      return this.help();
+    let args: ArgsOption[] = [];
+    try {
+      args = this.processOptions();
+    } catch (error) {
+      return;
     }
 
-    for (let i = 1; i < this.args.length; i++) {
-      this.terminal.println(this.args[i]);
+    let output = '';
+    for (const arg of args) {
+      if (arg.minified == '') {
+        output = arg.value as string;
+      }
     }
+
+    this.terminal.println(output);
 
     this.finishExecution();
   }

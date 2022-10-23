@@ -2,6 +2,7 @@ import BackendAPI from 'src/services/BackendAPI';
 import WikipediaAPI from 'src/services/WikipediaAPI';
 import { WikiDocResponse } from '../BackendAPI/Wiki/WikiDoc';
 import { WikiSummaryResponse } from '../BackendAPI/Wiki/WikiSummary';
+import { ArgsOption, CommandTypes } from '../CommandConfig';
 import { TerminalCommand } from '../TerminalCommandAbstract';
 
 export class GoogleCommand extends TerminalCommand {
@@ -14,37 +15,43 @@ export class GoogleCommand extends TerminalCommand {
     usage: ['gwk [OPTIONS] <query>'],
     options: [
       {
-        minified: '-m',
-        normal: '--min',
-        description: 'minified',
-        default: '1000ms',
+        minified: '<query>',
+        normal: '',
+        description: 'query to search',
+        default: '',
+        type: CommandTypes.string,
+        required: true,
+      },
+      {
+        minified: '-s',
+        normal: '',
+        description: 'simple results',
+        default: 'false',
+        type: CommandTypes.boolean,
+        required: false,
       },
     ],
   };
 
   execute() {
-    if (this.args.length == 1) {
-      return this.showMissingArguments();
-    }
-    if (this.checkHelp()) {
-      return this.help();
-    }
-
     this.terminal.startLoading();
 
     let minified = false;
     let matchText = '';
 
-    for (let i = 1; i < this.args.length; i++) {
-      if (this.args[i] == '-m' || this.args[i] == '--min') {
+    let args: ArgsOption[] = [];
+    try {
+      args = this.processOptions();
+    } catch (error) {
+      return;
+    }
+
+    for (const arg of args) {
+      if (arg.minified == '-s') {
         minified = true;
-        continue;
+      } else if (arg.minified == '') {
+        matchText = arg.value as string;
       }
-      if (matchText != '') {
-        this.showTooManyArguments();
-        return;
-      }
-      matchText = this.args[i];
     }
 
     BackendAPI.search(matchText)

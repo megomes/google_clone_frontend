@@ -1,3 +1,4 @@
+import { CommandTypes } from '../CommandConfig';
 import CommandsFactory from '../CommandsFactory';
 import { TerminalCommand } from '../TerminalCommandAbstract';
 
@@ -6,7 +7,16 @@ export class HelpCommand extends TerminalCommand {
     title: 'HELP',
     description: 'Print all available commands',
     usage: ['help', '<command> -h', '<command> --help'],
-    options: [],
+    options: [
+      {
+        minified: '<command>',
+        normal: '',
+        description: 'command to help',
+        default: '',
+        type: CommandTypes.string,
+        required: true,
+      },
+    ],
   };
 
   execute() {
@@ -15,7 +25,6 @@ export class HelpCommand extends TerminalCommand {
         //
       }).help();
       this.terminal.println('');
-      console.log(key);
     }
 
     this.finishExecution();
