@@ -70,3 +70,15 @@ config: CommandConfig = {
 };
 
 ```
+
+And add this new command on `./src/models/CommandsFactory.ts` commands array:
+
+```typescript
+static commands: { [k: string]: any } = {
+    [...]
+    echo: EchoCommand,
+    clear: ClearCommand,
+    ____: _____________
+  };
+
+```
